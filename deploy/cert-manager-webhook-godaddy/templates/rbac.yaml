@@ -11,7 +11,7 @@ metadata:
 kind: Role
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
-  name: {{ include "godaddy-webhook.fullname" . }}:webhook-authentication-reader
+  name: {{ include "godaddy-webhook.fullname" . }}:webhook-secret-reader
 rules:
   - apiGroups:
       - ""
@@ -23,7 +23,7 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
-  name: {{ include "godaddy-webhook.fullname" . }}-webhook-authentication-reader
+  name: {{ include "godaddy-webhook.fullname" . }}:webhook-secret-reader
   labels:
     app: {{ include "godaddy-webhook.name" . }}
     chart: {{ include "godaddy-webhook.chart" . }}
@@ -32,7 +32,7 @@ metadata:
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
-  name: {{ include "godaddy-webhook.fullname" . }}:webhook-authentication-reader
+  name: {{ include "godaddy-webhook.fullname" . }}:webhook-secret-reader
 subjects:
   - apiGroup: ""
     kind: ServiceAccount
@@ -46,7 +46,7 @@ subjects:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
-  name: {{ include "godaddy-webhook.fullname" . }}-webhook-authentication-reader
+  name: {{ include "godaddy-webhook.fullname" . }}:webhook-authentication-reader
   namespace: kube-system
   labels:
     app: {{ include "godaddy-webhook.name" . }}
@@ -68,7 +68,7 @@ subjects:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
-  name: {{ include "godaddy-webhook.fullname" . }}-auth-delegator
+  name: {{ include "godaddy-webhook.fullname" . }}:auth-delegator
   labels:
     app: {{ include "godaddy-webhook.name" . }}
     chart: {{ include "godaddy-webhook.chart" . }}
@@ -83,12 +83,14 @@ subjects:
     kind: ServiceAccount
     name: {{ include "godaddy-webhook.fullname" . }}
     namespace: {{ .Release.Namespace }}
+
+
 ---
 # Grant cert-manager permission to validate using our apiserver
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
-  name: {{ include "godaddy-webhook.fullname" . }}-domain-solver
+  name: {{ include "godaddy-webhook.fullname" . }}:domain-solver
   labels:
     app: {{ include "godaddy-webhook.name" . }}
     chart: {{ include "godaddy-webhook.chart" . }}
@@ -105,7 +107,7 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
-  name: {{ include "godaddy-webhook.fullname" . }}-domain-solver
+  name: {{ include "godaddy-webhook.fullname" . }}:domain-solver
   labels:
     app: {{ include "godaddy-webhook.name" . }}
     chart: {{ include "godaddy-webhook.chart" . }}
@@ -114,7 +116,7 @@ metadata:
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: {{ include "godaddy-webhook.fullname" . }}-domain-solver
+  name: {{ include "godaddy-webhook.fullname" . }}:domain-solver
 subjects:
   - apiGroup: ""
     kind: ServiceAccount
